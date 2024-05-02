@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:translator/translator.dart';
 
 class LanguageProvider with ChangeNotifier {
-  bool _translating = false;
   static const List<Locale> _supportedLanguages = [
     Locale('en', 'us'),
     Locale('fr', 'fr'),
@@ -21,15 +20,23 @@ class LanguageProvider with ChangeNotifier {
     Locale('zh-cn', 'cn'),
     Locale('vi', 'vi'),
   ];
-  Locale selectedLocale = const Locale('en');
-  final Map<String, String> _languageData = {};
-  String? _languageData2;
-  final Map<String, String> _translatedData = {};
+  Locale generateSelectedLocale = const Locale('en');
+  Locale updateSelectedLocale = const Locale('en');
+
+  bool _translating = false;
+  bool _translatingComplete = false;
+
+  final Map<String, String> _generateLanguageData = {};
+  final Map<String, String> _updatelanguageData1 = {};
+  final Map<String, String> _updatelanguageData2 = {};
+  final Map<String, String> _generateTranslatedData = {};
+  final Map<String, String> _updateTranslatedData = {};
+
   double _progress = 0.0;
   String? _downloadedFileName;
-  String? _fileName1;
-  String? _fileName2;
-  bool _translatingComplete = false;
+  String? _generateFileName;
+  String? _updateFileName1;
+  String? _updateFileName2;
 
   bool get translating => _translating;
   set translating(bool value) {
@@ -38,29 +45,44 @@ class LanguageProvider with ChangeNotifier {
   }
 
   static List<Locale> get supportedLanguages => [..._supportedLanguages];
-  Locale get selectedLanguage => selectedLocale;
+  Locale get selectedLanguage => generateSelectedLocale;
   set setLocale(Locale locale) {
-    selectedLocale = locale;
+    generateSelectedLocale = locale;
     notifyListeners();
   }
 
-  Map<String, String> get languageData => _languageData;
-  set languageData(Map<String, String> data) {
-    _languageData.clear();
-    _languageData.addAll(data);
+  Map<String, String> get genearetLanguageData => _generateLanguageData;
+  set genearetLanguageData(Map<String, String> data) {
+    _generateLanguageData.clear();
+    _generateLanguageData.addAll(data);
     notifyListeners();
   }
 
-  String? get languageData2 => _languageData2;
-  set languageData2(String? data) {
-    _languageData2 = data;
+  Map<String, String> get updatelanguageData1 => _updatelanguageData1;
+  set updatelanguageData1(Map<String, String> data) {
+    _updatelanguageData1.clear();
+    _updatelanguageData1.addAll(data);
     notifyListeners();
   }
 
-  Map<String, String> get translatedData => _translatedData;
-  set translatedData(Map<String, String> data) {
-    _translatedData.clear();
-    _translatedData.addAll(data);
+  Map<String, String> get updatelanguageData2 => _updatelanguageData2;
+  set updatelanguageData2(Map<String, String> data) {
+    _updatelanguageData2.clear();
+    _updatelanguageData2.addAll(data);
+    notifyListeners();
+  }
+
+  Map<String, String> get generateTranslatedData => _generateTranslatedData;
+  set generateTranslatedData(Map<String, String> data) {
+    _generateTranslatedData.clear();
+    _generateTranslatedData.addAll(data);
+    notifyListeners();
+  }
+
+  Map<String, String> get updateTranslatedData => _updateTranslatedData;
+  set updateTranslatedData(Map<String, String> data) {
+    _updateTranslatedData.clear();
+    _updateTranslatedData.addAll(data);
     notifyListeners();
   }
 
@@ -70,16 +92,22 @@ class LanguageProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  String? get fileName1 => _fileName1;
-  set fileName1(String? value) {
-    _fileName1 = value;
+  String? get generateFileName => _generateFileName;
+  set generateFileName(String? value) {
+    _generateFileName = value;
     notifyListeners();
   }
 
-  String? get fileName2 => _fileName2;
-  set fileName2(String? value) {
-    _fileName2 = value;
-    _selectedDefaultLanguageFromFile(_fileName2 ?? "");
+  String? get updateFileName1 => _updateFileName1;
+  set updateFileName1(String? value) {
+    _updateFileName1 = value;
+    notifyListeners();
+  }
+
+  String? get updateFileName2 => _updateFileName2;
+  set updateFileName2(String? value) {
+    _updateFileName2 = value;
+    _selectedDefaultLanguageFromFile(_updateFileName2 ?? "");
     notifyListeners();
   }
 
@@ -97,9 +125,8 @@ class LanguageProvider with ChangeNotifier {
 
   void _selectedDefaultLanguageFromFile(String value) {
     value = value.replaceAll(".json", "");
-    print(value);
     try {
-      selectedLocale = supportedLanguages
+      updateSelectedLocale = supportedLanguages
           .firstWhere((element) => element.languageCode == value);
     } catch (e) {
       print(e);
@@ -110,7 +137,7 @@ class LanguageProvider with ChangeNotifier {
     downloadedFileName = selectedLanguage.languageCode;
     progress = 0.0;
     translating = true;
-    for (var entry in _languageData.entries) {
+    for (var entry in _generateLanguageData.entries) {
       if (!_translating) {
         break;
       }
@@ -132,14 +159,14 @@ class LanguageProvider with ChangeNotifier {
 
   void downloadFile(int tabIndex) {
     if (tabIndex == 1) {
-      if ((languageData2?.lastIndexOf('}') ?? -1) > 0) {
-        languageData2 =
-            ((languageData2?.substring(0, languageData2?.lastIndexOf('}')) ??
-                    "") +
-                "," +
-                jsonEncode(translatedData)
-                    .substring(jsonEncode(translatedData).indexOf('{') + 1));
-        downloadJsonFile(languageData2 ?? "");
+      if ((updatelanguageData1?.lastIndexOf('}') ?? -1) > 0) {
+        updatelanguageData1 = ((updatelanguageData1?.substring(
+                    0, updatelanguageData1?.lastIndexOf('}')) ??
+                "") +
+            "," +
+            jsonEncode(translatedData)
+                .substring(jsonEncode(translatedData).indexOf('{') + 1));
+        downloadJsonFile(updatelanguageData1 ?? "");
       }
     } else {
       downloadJsonFile(jsonEncode(translatedData));
