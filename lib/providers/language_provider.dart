@@ -20,15 +20,15 @@ class LanguageProvider with ChangeNotifier {
     Locale('zh-cn', 'cn'),
     Locale('vi', 'vi'),
   ];
-  Locale generateSelectedLocale = const Locale('en');
-  Locale updateSelectedLocale = const Locale('en');
+  Locale _generateSelectedLocale = const Locale('en');
+  Locale _updateSelectedLocale = const Locale('en');
 
   bool _translating = false;
   bool _translatingComplete = false;
 
   final Map<String, String> _generateLanguageData = {};
   final Map<String, String> _updatelanguageData1 = {};
-  final Map<String, String> _updatelanguageData2 = {};
+  String? _updatelanguageData2;
   final Map<String, String> _generateTranslatedData = {};
   final Map<String, String> _updateTranslatedData = {};
 
@@ -45,14 +45,20 @@ class LanguageProvider with ChangeNotifier {
   }
 
   static List<Locale> get supportedLanguages => [..._supportedLanguages];
-  Locale get selectedLanguage => generateSelectedLocale;
-  set setLocale(Locale locale) {
-    generateSelectedLocale = locale;
+  Locale get generateSelectedLocale => _generateSelectedLocale;
+  set generateSelectedLocale(Locale locale) {
+    _generateSelectedLocale = locale;
     notifyListeners();
   }
 
-  Map<String, String> get genearetLanguageData => _generateLanguageData;
-  set genearetLanguageData(Map<String, String> data) {
+  Locale get updateSelectedLocale => _updateSelectedLocale;
+  set updateSelectedLocale(Locale locale) {
+    _updateSelectedLocale = locale;
+    notifyListeners();
+  }
+
+  Map<String, String> get generateLanguageData => _generateLanguageData;
+  set generateLanguageData(Map<String, String> data) {
     _generateLanguageData.clear();
     _generateLanguageData.addAll(data);
     notifyListeners();
@@ -65,10 +71,9 @@ class LanguageProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String, String> get updatelanguageData2 => _updatelanguageData2;
-  set updatelanguageData2(Map<String, String> data) {
-    _updatelanguageData2.clear();
-    _updatelanguageData2.addAll(data);
+  String? get updatelanguageData2 => _updatelanguageData2;
+  set updatelanguageData2(String? data) {
+    _updatelanguageData2 = data;
     notifyListeners();
   }
 
@@ -126,28 +131,49 @@ class LanguageProvider with ChangeNotifier {
   void _selectedDefaultLanguageFromFile(String value) {
     value = value.replaceAll(".json", "");
     try {
-      updateSelectedLocale = supportedLanguages
+      _updateSelectedLocale = supportedLanguages
           .firstWhere((element) => element.languageCode == value);
     } catch (e) {
       print(e);
     }
   }
 
-  void translate() async {
-    downloadedFileName = selectedLanguage.languageCode;
+  void generateFileTranslate() async {
+    downloadedFileName = _generateSelectedLocale.languageCode;
     progress = 0.0;
     translating = true;
+
+    translatingComplete = false;
     for (var entry in _generateLanguageData.entries) {
       if (!_translating) {
         break;
       }
       Translation processedValue = await entry.value
-          .translate(from: 'en', to: selectedLanguage.languageCode);
-      _translatedData[entry.key] = processedValue.text;
+          .translate(from: 'en', to: _generateSelectedLocale.languageCode);
+      _generateTranslatedData[entry.key] = processedValue.text;
       progress = _progress + 1;
     }
     translating = false;
+    translatingComplete = true;
+    notifyListeners();
+  }
 
+  void updateFileTranslate() async {
+    downloadedFileName = _updateSelectedLocale.languageCode;
+    progress = 0.0;
+    translating = true;
+
+    translatingComplete = false;
+    for (var entry in _updatelanguageData1.entries) {
+      if (!_translating) {
+        break;
+      }
+      Translation processedValue = await entry.value
+          .translate(from: 'en', to: _updateSelectedLocale.languageCode);
+      _updateTranslatedData[entry.key] = processedValue.text;
+      progress = _progress + 1;
+    }
+    translating = false;
     translatingComplete = true;
     notifyListeners();
   }
@@ -157,19 +183,15 @@ class LanguageProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void downloadFile(int tabIndex) {
-    if (tabIndex == 1) {
-      if ((updatelanguageData1?.lastIndexOf('}') ?? -1) > 0) {
-        updatelanguageData1 = ((updatelanguageData1?.substring(
-                    0, updatelanguageData1?.lastIndexOf('}')) ??
-                "") +
-            "," +
-            jsonEncode(translatedData)
-                .substring(jsonEncode(translatedData).indexOf('{') + 1));
-        downloadJsonFile(updatelanguageData1 ?? "");
-      }
-    } else {
-      downloadJsonFile(jsonEncode(translatedData));
+  void downloadGeneratedFile() {
+    downloadJsonFile(jsonEncode(_generateTranslatedData));
+  }
+
+  void downloadUpdateFile() {
+    if ((updatelanguageData2?.lastIndexOf('}') ?? -1) > 0) {
+      updatelanguageData2 =
+          ("${updatelanguageData2?.substring(0, updatelanguageData2?.lastIndexOf('}'))},${jsonEncode(_updateTranslatedData).substring(jsonEncode(_updateTranslatedData).indexOf('{') + 1)}");
+      downloadJsonFile(updatelanguageData2 ?? "");
     }
   }
 

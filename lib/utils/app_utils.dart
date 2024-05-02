@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -17,12 +18,13 @@ class AppUtils {
         .then(onFileSelect);
   }
 
-  static Future<void> showCustomDialog(BuildContext context) async {
+  static Future<void> showCustomDialog(BuildContext context,
+      {Function? onSubmit, String? initialData}) async {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           final TextEditingController textEditingController =
-              TextEditingController();
+              TextEditingController(text: initialData);
 
           return AlertDialog(
             title: const Text('Enter Language Map'),
@@ -48,7 +50,12 @@ class AppUtils {
               TextButton(
                 child: const Text('Submit'),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  try {
+                    onSubmit!(json.decode(textEditingController.text));
+                    Navigator.of(context).pop();
+                  } catch (e) {
+                    print(e);
+                  }
                 },
               ),
             ],
