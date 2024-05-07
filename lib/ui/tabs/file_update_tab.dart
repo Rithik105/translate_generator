@@ -72,7 +72,8 @@ class _FileUpdateTabState extends State<FileUpdateTab> {
                     setState(() {});
                   });
                 },
-                hintText: "Select an English File",
+                hintText: languageProvider.updateFileName1 ??
+                    "Select an English File",
               ),
               const SizedBox(
                 width: 20,
@@ -89,6 +90,7 @@ class _FileUpdateTabState extends State<FileUpdateTab> {
                             ? _tempData.toString()
                             : "", onSubmit: (data) {
                       _tempData = Map.castFrom(data);
+                      languageProvider.updateFileName1 = null;
                       languageProvider.updatelanguageData1 = _tempData!;
                       setState(() {});
                     });
@@ -121,7 +123,8 @@ class _FileUpdateTabState extends State<FileUpdateTab> {
                 setState(() {});
               });
             },
-            hintText: "Select File to Update",
+            hintText:
+                languageProvider.updateFileName2 ?? "Select File to Update",
           ),
           const Text(
             "Select the target language",
@@ -174,7 +177,8 @@ class _FileUpdateTabState extends State<FileUpdateTab> {
           ),
           CustomButton(
               title: languageProvider.translating ? "Stop" : "Translate",
-              onPressed: languageProvider.updateTranslatedData.isEmpty
+              onPressed: (languageProvider.updatelanguageData1.isEmpty ||
+                      (languageProvider.updatelanguageData2?.isEmpty ?? true))
                   ? null
                   : () {
                       if (languageProvider.translating) {
