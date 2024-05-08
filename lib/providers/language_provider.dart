@@ -134,7 +134,7 @@ class LanguageProvider with ChangeNotifier {
       _updateSelectedLocale = supportedLanguages
           .firstWhere((element) => element.languageCode == value);
     } catch (e) {
-      print(e);
+      _updateSelectedLocale = const Locale('en');
     }
   }
 

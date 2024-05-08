@@ -6,11 +6,12 @@ import 'package:provider/provider.dart';
 import 'package:translate_generator/providers/language_provider.dart';
 import 'package:translate_generator/ui/widgets/custom_button.dart';
 import 'package:translate_generator/ui/widgets/file_choose_widget.dart';
+import 'package:translate_generator/utils/app_colors.dart';
 import 'package:translate_generator/utils/app_constants.dart';
 import 'package:translate_generator/utils/app_utils.dart';
 
 class FileUpdateTab extends StatefulWidget {
-  FileUpdateTab({super.key});
+  const FileUpdateTab({super.key});
 
   @override
   State<FileUpdateTab> createState() => _FileUpdateTabState();
@@ -47,7 +48,7 @@ class _FileUpdateTabState extends State<FileUpdateTab> {
                   percent: languageProvider.progress /
                       languageProvider.updatelanguageData1.length,
                   backgroundColor: Colors.grey,
-                  progressColor: const Color(0xff5f37da),
+                  progressColor: AppColor.accentColor,
                   barRadius: const Radius.circular(20),
                   animation: true,
                 )),
@@ -103,7 +104,7 @@ class _FileUpdateTabState extends State<FileUpdateTab> {
                       Icons.done,
                       color: AppConstants.PRIMARY_COLOR,
                     )
-                  : SizedBox()
+                  : const SizedBox()
             ],
           ),
           const SizedBox(

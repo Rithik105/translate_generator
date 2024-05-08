@@ -5,6 +5,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:translate_generator/providers/language_provider.dart';
 import 'package:translate_generator/ui/widgets/custom_button.dart';
+import 'package:translate_generator/utils/app_colors.dart';
 
 import '../../utils/app_utils.dart';
 import '../widgets/file_choose_widget.dart';
@@ -41,7 +42,7 @@ class FileGenerateTab extends StatelessWidget {
                   percent: languageProvider.progress /
                       languageProvider.generateLanguageData.length,
                   backgroundColor: Colors.grey,
-                  progressColor: const Color(0xff5f37da),
+                  progressColor: AppColor.accentColor,
                   barRadius: const Radius.circular(20),
                   animation: true,
                 )),
@@ -53,7 +54,6 @@ class FileGenerateTab extends StatelessWidget {
             onFilePicked: () {
               AppUtils.onFilePicked(context,
                   onFileSelect: (selectedFile) async {
-                print(selectedFile);
                 final file = selectedFile!.files.single;
                 languageProvider.translatingComplete = false;
                 languageProvider.generateTranslatedData.clear();

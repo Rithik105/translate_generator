@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:translate_generator/providers/language_provider.dart';
+import 'package:translate_generator/utils/app_colors.dart';
 
 import 'ui/screens/home_screen.dart';
 
@@ -17,9 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(
-                0xff5f37da,
-              ),
+              backgroundColor: AppColor.accentColor,
               foregroundColor: Colors.white),
         ),
         textTheme: const TextTheme(
@@ -29,7 +28,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xff5f37da),
+          backgroundColor: AppColor.accentColor,
         ),
       ),
       debugShowCheckedModeBanner: false,

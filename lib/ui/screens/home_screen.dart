@@ -1,13 +1,9 @@
-import 'dart:convert';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:translate_generator/providers/language_provider.dart';
 import 'package:translate_generator/ui/tabs/file_generate_tab.dart';
 import 'package:translate_generator/ui/tabs/file_update_tab.dart';
-import 'package:translate_generator/ui/widgets/custom_button.dart';
+import 'package:translate_generator/utils/app_colors.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -91,9 +87,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 },
                 controller: _tabController,
                 indicatorSize: TabBarIndicatorSize.label,
-                indicatorColor: const Color(0xff5f37da),
+                indicatorColor: AppColor.accentColor,
                 unselectedLabelColor: Colors.grey,
-                labelColor: const Color(0xff5f37da),
+                labelColor: AppColor.accentColor,
                 tabs: const [
                   Tab(
                     child: Text(

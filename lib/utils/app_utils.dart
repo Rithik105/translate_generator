@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:translate_generator/utils/app_constants.dart';
 
@@ -53,9 +51,7 @@ class AppUtils {
                   try {
                     onSubmit!(json.decode(textEditingController.text));
                     Navigator.of(context).pop();
-                  } catch (e) {
-                    print(e);
-                  }
+                  } catch (e) {}
                 },
               ),
             ],

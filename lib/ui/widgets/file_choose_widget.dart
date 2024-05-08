@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:translate_generator/ui/widgets/custom_button.dart';
+import 'package:translate_generator/utils/app_colors.dart';
 
 class FileChooseWidget extends StatelessWidget {
   final Function() onFilePicked;
@@ -20,11 +19,7 @@ class FileChooseWidget extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: const Color(
-                    0xff5f37da,
-                  ),
-                )),
+                border: Border.all(color: AppColor.accentColor)),
             child: Text(
               hintText,
             ),
